@@ -9,7 +9,11 @@ x_data = [[1,2,3],[4,5,6]]
 W = tf.Variable(tf.random_normal([3,2]))
 b = tf.Variable(tf.random_normal([2,1]))
 
-expr = tf.matmul(X, W) + b
+bbb = tf.Variable(tf.random_normal([2,2]))
+ccc = tf.Variable(tf.random_normal([2,1]))
+ddd = bbb+ccc
+
+expr = tf.matmul(X, W)+b
 
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
@@ -22,5 +26,16 @@ print('b')
 print(sess.run(b))
 print('expr')
 print(sess.run(expr, feed_dict={X: x_data}))
+print('ccc')
+
+print('----------------------')
+
+print(sess.run(bbb))
+print(sess.run(ccc))
+print(sess.run(ddd))
+
+print('----------------------')
+
+
 
 sess.close()
