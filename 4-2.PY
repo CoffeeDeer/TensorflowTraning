@@ -14,10 +14,14 @@ y_data = np.array([
 X = tf.placeholder(tf.float32)
 Y = tf.placeholder(tf.float32)
 
+#가중치 변수 [입력층(특징수), 출력층(레이블 수)]
 W = tf.Variable(tf.random_uniform([2,3], -1., 1.))
+#편향 변수
 b = tf.Variable(tf.zeros([3]))
 
+
 L = tf.add(tf.matmul(X, W),b)
+#활성화 함수
 L = tf.nn.relu(L)
 
 model = tf.nn.softmax(L)
