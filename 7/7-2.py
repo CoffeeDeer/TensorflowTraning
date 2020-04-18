@@ -5,16 +5,20 @@ import matplotlib.pyplot as plt
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("./mnist/", one_hot=True)
 
-# 입력 - 2차원 평면 28*28개의 1차원 
+# 입력 - 2차원 평면 28*28개의 1차원
 X = tf.placeholder(tf.float32, [None, 28, 28 , 1])
 # 출력 - 0~9 사이의 각각 숫자의 가능성
 Y = tf.placeholder(tf.float32, [None, 10])
 
 keep_prob = tf.placeholder(tf.float32)
 
+# 평면 3*3 의 1차원 32개의 필터
 W1 = tf.Variable(tf.random_normal([3, 3, 1, 32], stddev=0.01))
+# 컨볼루션 작업
 L1 = tf.nn.conv2d(X, W1, strides=[1, 1, 1, 1], padding='SAME')
 L1 = tf.nn.relu(L1)
+
+# L1(3*3 1차원의 32개의 필터 를 가진 컨볼루션 계층) 에서
 L1 = tf.nn.max_pool(L1, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
 W2 = tf.Variable(tf.random_normal([3, 3, 32, 64], stddev=0.01))
@@ -42,7 +46,7 @@ with tf.Session() as sess:
     batch_size = 100
     total_batch = int(mnist.train.num_examples / batch_size)
 
-    for epoch in range(15):
+    for epoch in range(2):
         total_cost = 0
 
         for i in range(total_batch):
@@ -59,4 +63,5 @@ with tf.Session() as sess:
     is_correct = tf.equal(tf.argmax(model, 1), tf.argmax(Y, 1))
     accuracy = tf.reduce_mean(tf.cast(is_correct, tf.float32))
 
-    print('정확도: ', sess.run(accuracy, feed_dict={X:mnist.test.images.reshape(-1,28,28,1), Y:mnist.test.labels, keep_prob: 1}))
+    print('afa')
+    print('정확도: ', sess.run(accuracy, feed_dict={X:mnist.test.images[:100].reshape(-1,28,28,1), Y:mnist.test.labels[:100], keep_prob: 1}))
