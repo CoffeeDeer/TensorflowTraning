@@ -14,7 +14,6 @@ n_hidden = 256
 n_input = 28 * 28
 n_noise = 128
 
-
 X = tf.placeholder(tf.float32, [None, n_input])
 Z = tf.placeholder(tf.float32, [None, n_noise])
 
@@ -32,7 +31,7 @@ D_b1 = tf.Variable(tf.zeros([n_hidden]))
 D_W2 = tf.Variable(tf.random_normal([n_hidden, 1], stddev=0.01))
 D_b2 = tf.Variable(tf.zeros([1]))
 
-# 생성자 신경망
+# 생성자 신경망 noise_z = [batchsize , noise] = [100,128]
 def generator(noise_z):
     hidden = tf.nn.relu(tf.matmul(noise_z, G_W1) + G_b1)
     output = tf.nn.sigmoid(tf.matmul(hidden, G_W2) + G_b2)
@@ -73,10 +72,23 @@ with tf.Session() as sess:
 
     for epoch in range(total_epoch):
         for i in range(total_batch):
+            # mnist 데이터에서 batch_size 만큼의 이미지를 가져옴
             batch_xs, batch_ys = mnist.train.next_batch(batch_size)
+            # [100,128]의 무작위 행렬 생성 생성
             noise = get_noise(batch_size, n_noise)
 
+            # train_D - 구분자 학습
+            # D_real = discriminator(X) - input 형태의 실제 batch_xs들을 구분자 신경망을 통과시킴
+            # 노이즈 또한 구분자 신경망을 통과시킴
+            # 실제 일치율 + 노이지 이미지 가능성이가 최대가 신경망을 학습시킴
             _,loss_val_D = sess.run([train_D, loss_D], feed_dict={X:batch_xs, Z:noise})
+
+            # train_G - 생성자 학습
+            # -loss_G가 최소가 되도록 G_var_list 함수들을 실행
+            # train_G 
+            # G = generator(Z) - Z =랜덤한 - input 형태로 랜덤가공을 진행
+            # D_gene = discriminator(G) - input 형태의 noise 를 구분자 신경망을 통과시킴
+            # 일치율이 최대가 되도록 신경망을 학습
             _,loss_val_G = sess.run([train_G, loss_G], feed_dict={Z:noise})
 
         print('Epoch:', '%04d' % epoch, 'D loss: {:.4}'.format(loss_val_D), 'G loss: {:.4}'.format(loss_val_G))
