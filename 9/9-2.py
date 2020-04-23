@@ -17,13 +17,12 @@ n_class = 10
 learning_rate = 0.0002
 
 
-
 X = tf.placeholder(tf.float32, [None, n_input])
 Y = tf.placeholder(tf.float32, [None, n_class])
 Z = tf.placeholder(tf.float32, [None, n_noise])
 
 
-# 생성자 신경망 noise_z = [batchsize , noise] = [100,128]
+# 생성자 신경망 noise_z = [batchsize , noise] = [100,128] + [100,10]
 def generator(noise, labels):
     with tf.variable_scope('generator'):
         inputs = tf.concat([noise,labels], 1)
@@ -37,6 +36,7 @@ def discriminator(inputs, labels, reuse=None):
         if reuse:
             scope.reuse_variables()
         inputs = tf.concat([inputs, labels], 1)
+
         hidden = tf.layers.dense(inputs, n_hidden, activation = tf.nn.relu)
         output = tf.layers.dense(hidden, 1, activation = None)
 

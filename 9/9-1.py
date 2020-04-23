@@ -62,7 +62,7 @@ G_var_list = [G_W1, G_b1, G_W2, G_b2]
 train_D = tf.train.AdamOptimizer(learning_rate).minimize(-loss_D, var_list=D_var_list)
 train_G = tf.train.AdamOptimizer(learning_rate).minimize(-loss_G, var_list=G_var_list)
 
-
+# 무작위 노이즈를 무작위 숫자로 변경해주는 신경망인가요?!
 with tf.Session() as sess:
     init = tf.global_variables_initializer()
     sess.run(init)
