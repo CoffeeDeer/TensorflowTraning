@@ -1,4 +1,4 @@
-# GAN default model
+# RNN default model
 
 import tensorflow as tf
 import numpy as np
@@ -16,12 +16,14 @@ n_step = 28
 n_hidden = 128
 n_class = 10
 
+# 가로픽셀수(step) , 세로픽셀수(input) - 연속적인 효과를 보기 위해서
 X = tf.placeholder(tf.float32, [None, n_step, n_input])
 Y = tf.placeholder(tf.float32, [None, n_class])
 
 W = tf.Variable(tf.random_normal([n_hidden, n_class]))
 b = tf.Variable(tf.random_normal([n_class]))
 
+# n_hidden 개의 출력값을 갖는 RNN 셀을 생성 - 기존의 시스템상에서 설정된 값을 활용함
 cell = tf.nn.rnn_cell.BasicRNNCell(n_hidden)
 
 outputs, states = tf.nn.dynamic_rnn(cell, X, dtype=tf.float32)
@@ -44,7 +46,6 @@ with tf.Session() as sess:
 
     total_batch = int(mnist.train.num_examples / batch_size)
 
-
     for epoch in range(total_epoch):
         total_cost = 0
 
@@ -52,6 +53,7 @@ with tf.Session() as sess:
             # mnist 데이터에서 batch_size 만큼의 이미지를 가져옴
             batch_xs, batch_ys = mnist.train.next_batch(batch_size)
 
+            #입력에 맞게 바꿔주는 과정
             batch_xs = batch_xs.reshape((batch_size, n_step, n_input))
 
             _,cost_val = sess.run([optimizer, cost], feed_dict={X:batch_xs, Y:batch_ys})
