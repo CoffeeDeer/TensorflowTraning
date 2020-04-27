@@ -16,6 +16,12 @@ def make_batch(seq_data):
     output_batch = []
     target_batch = []
 
+    
+    for seq in seq_data:
+        if seq[0] == 'wodr':
+            output = [num_dic[n] for n in ('S' + seq[1])]
+            print(seq,output)
+
     for seq in seq_data:
 
         input = [num_dic[n] for n in seq[0]]
@@ -72,14 +78,14 @@ with tf.Session() as sess:
 
     def translate(word):
         seq_data = [word, 'P' * len(word)]
-        input_batch, output_batch, target_batch = make_batch(seq_data)
+        input_batch, output_batch, target_batch = make_batch([seq_data])
 
-        prediction = tf.argmax(model, 2)
+        prediction = tf.argmax( , 2)
         result = sess.run(prediction, feed_dict={enc_input:input_batch, dec_input:output_batch, targets:target_batch})
 
         decoded = [char_arr[i] for i in result[0]]
 
-        #end = #decoded.index('E')
+        end = decoded.index('E')
         translated = ''.join(decoded)
 
         return translated
